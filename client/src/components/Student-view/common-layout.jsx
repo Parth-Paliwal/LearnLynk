@@ -6,7 +6,7 @@ function StudentViewCommonLayout(){
 
     return (
         <div>
-            <StudentViewCommonLayout/>
+            <StudentViewCommonHeader/>
             <Outlet/>
         </div>
     )

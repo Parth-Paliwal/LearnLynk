@@ -14,7 +14,6 @@ function InstructorDashboardPage() {
     function handleLogout() {
         resetCredentials();
         sessionStorage.clear();
-        
     }
     
     const [activeTab, setActiveTab] = useState("dashboard");
