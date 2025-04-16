@@ -4,8 +4,40 @@ const Course = require('../../models/Course')
 
 const getAllStudentViewCourses = async(req , res)=>{
     try {
+        const {category=[] , level =[] , primaryLanguage=[],sortBy="price-lowtohigh"} = req.query;
+        let filter = {}
+        if(category.length){
+            filter.category = {$in : category.split(',')};
+        }
+        if(level.length){
+            filter.level = {$in : level.split(',')};
+        }
+        if(primaryLanguage.length){
+            filter.primaryLanguage = {$in : primaryLanguage.split(',')};
+        }
+
+        let sort = {}
+
+        switch (sortBy) {
+            case "price-lowtohigh":
+                sort.pricing = 1
+                break;
+            case "price-hightolow":
+                sort.pricing = -1
+                break;
+            case "title-atoz":
+                sort.tilte = 1
+                break;
+            case "title-ztoa":
+                sort.title = -1
+                break;
         
-        const courseList = await Course.find({});
+            default:
+                sort.pricing = 1
+                break;
+        }
+
+        const courseList = await Course.find(filter).sort(sort);
         if(courseList.length === 0){
             return res.status(404).json({
                 success : false,
