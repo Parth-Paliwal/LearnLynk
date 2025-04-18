@@ -38,13 +38,7 @@ const getAllStudentViewCourses = async(req , res)=>{
         }
 
         const courseList = await Course.find(filter).sort(sort);
-        if(courseList.length === 0){
-            return res.status(404).json({
-                success : false,
-                message : "No course Found",
-                data : []
-            })
-        }
+        
         res.status(200).json({
             success : true,
             data : courseList,
@@ -63,7 +57,7 @@ const getStudentViewCoursesDetails = async(req , res)=>{
     try {
         
         const {id} = req.params;
-        const courseDetails = await Course.find({id});
+        const courseDetails = await Course.findById(id);
 
         if(!courseDetails){
             return res.status(404).json({
@@ -72,7 +66,6 @@ const getStudentViewCoursesDetails = async(req , res)=>{
                 data : null
             })
         }
-
         res.status(200).json({
             success : true,
             data : courseDetails,
