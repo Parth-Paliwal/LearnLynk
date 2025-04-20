@@ -11,7 +11,7 @@ const authRoutes = require("./routes/auth-routes/index");
 const mediaRoutes = require("./routes/instructor-routes/media-routes");
 const instructorCourseRoutes = require("./routes/instructor-routes/course-routes")
 const studentViweCouseRoutes = require("./routes/student-routes/course-routes")
-
+const studentViewOrderRoutes = require("./routes/student-routes/order-routes");
 
 app.use(cors({
     origin : "http://localhost:5173",
@@ -32,6 +32,8 @@ app.use("/auth"   , authRoutes);
 app.use("/media" , mediaRoutes);
 app.use("/instructor/course" , instructorCourseRoutes);
 app.use("/student/course" , studentViweCouseRoutes);
+app.use("/student/order" , studentViewOrderRoutes);
+
 
 app.listen(80 , ()=>{
     console.log(`server is listning on port : ${PORT}`);

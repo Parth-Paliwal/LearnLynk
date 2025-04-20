@@ -74,5 +74,14 @@ export async function fetchStudentViewCourseDetailsService(courseID){
     const {data} = await axiosInstace.get(`/student/course/get/details/${courseID}`);
     return data;
 }
+export async function createPaymentService(formData){
+    const {data} = await axiosInstace.post(`/student/order/create` , formData);
+    return data;
+}
+export async function captureAndFinalizePaymentService(courseID){
+    const {data} = await axiosInstace.get(`/student/order/capture`);
+    return data;
+}
+
 
 

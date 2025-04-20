@@ -13,6 +13,7 @@ import NotFoundPage from './pages/not-found'
 import AddNewCoursePage from './pages/instructor/add-new-course'
 import StudentViewCoursesPage from './pages/student/courses'
 import StudentViewCourseDetailsPage from './pages/student/course-details'
+import PaypalPaymentReturnPage from './pages/student/payment-return'
 
 function App() {
 
@@ -59,6 +60,7 @@ console.log(auth);
       <Route path="home" element={<StudentHomePage/>}/>
       <Route path="courses" element={<StudentViewCoursesPage/>}/>
       <Route path="course/details/:id" element={<StudentViewCourseDetailsPage/>}/>
+      <Route path="payment-return" element={<PaypalPaymentReturnPage/>}/>
 
       <Route path='*' element={<NotFoundPage/>}/>
 
