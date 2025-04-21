@@ -1,3 +1,4 @@
+import StudentViewCommonLayout from "@/components/Student-view/common-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AuthContex } from "@/contex/auth-contex";
@@ -5,6 +6,7 @@ import { StudentContext } from "@/contex/student-context"
 import { fetchStudentBoughtCoursesService } from "@/services";
 import { Play, Watch } from "lucide-react";
 import { useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -12,6 +14,7 @@ function StudentCoursesPage(){
 
     const {studentBoughtCourses , setStudentBoughtCourses} = useContext(StudentContext);
     const {auth} = useContext(AuthContex);
+    const navigate = useNavigate();
     async function  fetchStudentBoughtCourses(){
         const response = await fetchStudentBoughtCoursesService(auth?.user?._id);
         if(response.success){
@@ -25,6 +28,8 @@ function StudentCoursesPage(){
     } , [])
 
     return (
+        <>
+        <StudentViewCommonLayout/>
         <div className="p-4">
             <h1 className="text-3xl font-bold mb-8 "></h1>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -43,7 +48,7 @@ function StudentCoursesPage(){
                             <p className="text-sm text-gray-700 mb-2 ">{course?.instructorName}</p>
                         </CardContent>
                         <CardFooter>
-                            <Button className="flex-1 ">
+                            <Button onClick={()=>navigate(`/courses-progress/${course.courseId}`)} className="flex-1 ">
                                 <Play className="mr-2 h-4 w-4 "/>
                                 Start Watching 
                             </Button>
@@ -56,6 +61,7 @@ function StudentCoursesPage(){
                 
             </div>
         </div>
+        </>
     )
 }
 

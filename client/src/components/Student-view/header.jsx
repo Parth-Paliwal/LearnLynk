@@ -23,7 +23,9 @@ function StudentViewCommonHeader() {
                     <span className="font-extrabold md:text-xl text-[14px]">LearnLynk</span>
                 </Link>
                 <div className="flex items-center space-x-1">
-                    <Button onClick={()=>navigate('/courses')} variant="ghost" className="text-[14px] md:text-[16px] font-medium">
+                    <Button onClick={()=>{
+                        location.pathname.includes('/courses') ? null : 
+                        navigate('/courses')}} variant="ghost" className="text-[14px] md:text-[16px] font-medium">
                         Explore
                     </Button>
                 </div>

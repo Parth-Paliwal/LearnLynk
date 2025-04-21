@@ -6,8 +6,9 @@ import { DropdownMenu, DropdownMenuTrigger,DropdownMenuContent, DropdownMenuRadi
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { filterOptions, sortOptions } from "@/config"
+import { AuthContex } from "@/contex/auth-contex"
 import { StudentContext } from "@/contex/student-context"
-import { fetchStudentViewCourseListService } from "@/services"
+import { checkCoursePurchaseInfoService, fetchStudentViewCourseListService } from "@/services"
 import { ArrowUpDownIcon } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom"
@@ -20,8 +21,8 @@ function StudentViewCoursesPage(){
     const [searchParams , setSearchParams] = useSearchParams()
     const {studentViewCoursesList,setStudentViewCoursesList , loadingState , setLoadingState}=useContext(StudentContext);
 
+    const {auth} = useContext(AuthContex);
     const navigate = useNavigate();
-    
     
     async function fetchAllStudentViewCourses(filters , sort ){
         const query = new URLSearchParams({
@@ -44,6 +45,19 @@ function StudentViewCoursesPage(){
             }
         }
         return queryParams.join('&');
+    }
+
+    async function handleCourseNavigate(getCurrentCourseId){
+        const response = await checkCoursePurchaseInfoService(getCurrentCourseId , auth?.user._id);
+        
+        if(response.success){
+            if(response.data){
+                navigate(`/courses-progress/${getCurrentCourseId}`);
+            }else{
+                navigate(`/course/details/${getCurrentCourseId}`);  
+            }
+        }
+
     }
 
     useEffect(()=>{
@@ -156,7 +170,7 @@ function StudentViewCoursesPage(){
                     {
                         studentViewCoursesList && studentViewCoursesList.length>0 ?
                         studentViewCoursesList.map(courseItem=>(
-                            <Card onClick={()=>{navigate(`/course/details/${courseItem?._id}`)}} className="cursor-pointer border-2 border-gray-500" key={courseItem?._id}>
+                            <Card onClick={()=>{handleCourseNavigate(courseItem?._id , )}} className="cursor-pointer border-2 border-gray-500" key={courseItem?._id}>
                                 <CardContent className ="flex gap-4 p-4">
                                     <div className="w-48 h-32 flex-shrink-0">
                                         <img 

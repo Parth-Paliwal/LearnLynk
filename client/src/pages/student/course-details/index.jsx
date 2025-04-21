@@ -6,10 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import VideoPlayer from "@/components/video-player";
 import { AuthContex } from "@/contex/auth-contex";
 import { StudentContext } from "@/contex/student-context"
-import { createPaymentService, fetchStudentViewCourseDetailsService } from "@/services";
+import { checkCoursePurchaseInfoService, createPaymentService, fetchStudentViewCourseDetailsService } from "@/services";
+import { useAnimationControls } from "framer-motion";
 import { CheckCircle, Globe, Lock, LockIcon, PlayCircle } from "lucide-react";
 import { useContext, useEffect, useState } from "react"
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function StudentViewCourseDetailsPage(){
 
@@ -24,6 +25,7 @@ function StudentViewCourseDetailsPage(){
 
     const {id} = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
 
     function handleSetFreePreview(getCurrentVideoInfo){
         setDisplayCurrentVideoFreePreview(getCurrentVideoInfo?.videoUrl)
@@ -36,13 +38,25 @@ function StudentViewCourseDetailsPage(){
     } , [displayCurrentVideoFreePreview])
 
     async function fetchStudentViewCourseDetails(){
-        const response = await fetchStudentViewCourseDetailsService(currentCourseDetailsId , auth?.user?._id);
+
+        const coursePurchaseInfo = await checkCoursePurchaseInfoService(currentCourseDetailsId , auth?.user?._id);
+
+        if(coursePurchaseInfo.success){
+            if(coursePurchaseInfo.data){
+                navigate(`/courses-progress/${currentCourseDetailsId}`)
+                return ;
+            }
+        }
+
+        const response = await fetchStudentViewCourseDetailsService(currentCourseDetailsId);
         if(response?.success){
             setStudentViewCourseDetails(response?.data);
             setLoadingState(false);
+            
         }else{
             setStudentViewCourseDetails(null);
             setLoadingState(false);
+            
         }
     }
 
@@ -61,6 +75,7 @@ function StudentViewCourseDetailsPage(){
         if(!location.pathname.includes("/course/details")){
             setStudentViewCourseDetails(null);
             setCurrentCourseDetailsId(null)
+            setCoursePurchasedId(null);
         }
      } , [location.pathname])
 

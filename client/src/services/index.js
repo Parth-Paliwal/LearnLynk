@@ -70,8 +70,8 @@ export async function fetchStudentViewCourseListService(query){
 }
 
 
-export async function fetchStudentViewCourseDetailsService(courseID , studentId){
-    const {data} = await axiosInstace.get(`/student/course/get/details/${courseID}/${studentId}`);
+export async function fetchStudentViewCourseDetailsService(courseID ){
+    const {data} = await axiosInstace.get(`/student/course/get/details/${courseID}`);
     return data;
 }
 export async function createPaymentService(formData){
@@ -88,5 +88,8 @@ export async function fetchStudentBoughtCoursesService(studentId){
     return data;
 }
 
-
+export async function checkCoursePurchaseInfoService(courseID , studentId){
+    const {data} = await axiosInstace.get(`/student/course/purchase-info/${courseID}/${studentId}`);
+    return data;
+}   
 

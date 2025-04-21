@@ -64,7 +64,7 @@ console.log(auth);
       <Route path="course/details/:id" element={<StudentViewCourseDetailsPage/>}/>
       <Route path="payment-return" element={<PaypalPaymentReturnPage/>}/>
       <Route path="student-courses" element={<StudentCoursesPage/>}/>
-      <Route path="courses-progress" element={<StudentViewCourseProgressPage/>}/>
+      <Route path="courses-progress/:id" element={<StudentViewCourseProgressPage/>}/>
 
       <Route path='*' element={<NotFoundPage/>}/>
 
