@@ -70,16 +70,21 @@ export async function fetchStudentViewCourseListService(query){
 }
 
 
-export async function fetchStudentViewCourseDetailsService(courseID){
-    const {data} = await axiosInstace.get(`/student/course/get/details/${courseID}`);
+export async function fetchStudentViewCourseDetailsService(courseID , studentId){
+    const {data} = await axiosInstace.get(`/student/course/get/details/${courseID}/${studentId}`);
     return data;
 }
 export async function createPaymentService(formData){
     const {data} = await axiosInstace.post(`/student/order/create` , formData);
     return data;
 }
-export async function captureAndFinalizePaymentService(courseID){
-    const {data} = await axiosInstace.get(`/student/order/capture`);
+export async function captureAndFinalizePaymentService(paymentId , payerId , orderId){
+    const {data} = await axiosInstace.post(`/student/order/capture` , {paymentId , payerId , orderId});
+    return data;
+}
+
+export async function fetchStudentBoughtCoursesService(studentId){
+    const {data} = await axiosInstace.get(`/student/courses-bought/get/${studentId}`);
     return data;
 }
 

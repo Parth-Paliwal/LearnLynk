@@ -1,5 +1,6 @@
 
 const Course = require('../../models/Course')
+const StudentCourses = require('../../models/StudentCourses');
 
 
 const getAllStudentViewCourses = async(req , res)=>{
@@ -56,7 +57,7 @@ const getAllStudentViewCourses = async(req , res)=>{
 const getStudentViewCoursesDetails = async(req , res)=>{
     try {
         
-        const {id} = req.params;
+        const {id , studentId} = req.params;
         const courseDetails = await Course.findById(id);
 
         if(!courseDetails){
@@ -66,6 +67,14 @@ const getStudentViewCoursesDetails = async(req , res)=>{
                 data : null
             })
         }
+
+        //check if the current student purchased this course or not
+
+        const studentCourses = await StudentCourses.findOne({
+            userId: studentId
+        })
+        console.log(studentCourses);
+
         res.status(200).json({
             success : true,
             data : courseDetails,

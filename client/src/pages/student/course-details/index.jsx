@@ -36,7 +36,7 @@ function StudentViewCourseDetailsPage(){
     } , [displayCurrentVideoFreePreview])
 
     async function fetchStudentViewCourseDetails(){
-        const response = await fetchStudentViewCourseDetailsService(currentCourseDetailsId);
+        const response = await fetchStudentViewCourseDetailsService(currentCourseDetailsId , auth?.user?._id);
         if(response?.success){
             setStudentViewCourseDetails(response?.data);
             setLoadingState(false);
@@ -78,7 +78,7 @@ function StudentViewCourseDetailsPage(){
             instructorId : studentViewCourseDetails?.instructorId,
             instructorName : studentViewCourseDetails?.instructorName ,
             coureseImage : studentViewCourseDetails?.image,
-            courseTitle : studentViewCourseDetails?.courseTitle,
+            courseTitle : studentViewCourseDetails?.title,
             courseId :  studentViewCourseDetails?._id,
             coursePricing : studentViewCourseDetails?.pricing ,
         }
