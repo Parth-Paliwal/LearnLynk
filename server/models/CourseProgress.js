@@ -10,10 +10,7 @@ const LectureProgressSchema = new mongoose.Schema({
 const StudentCourseProgressSchema = new mongoose.Schema({
 
     userId : String,
-    courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course"
-      }, 
+    courseId: String,
     completed : Boolean,
     completionDate : Date,
     lecturesProgress : [LectureProgressSchema] 

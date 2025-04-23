@@ -93,3 +93,18 @@ export async function checkCoursePurchaseInfoService(courseID , studentId){
     return data;
 }   
 
+export async function getCurrentCourseProgressservice(courseId , userId){
+    const {data} = await axiosInstace.get(`/student/course-progress/get/${userId}/${courseId}`);
+    return data;
+}   
+
+export async function markLectureAsViewedService(courseId , userId , lectureId ){
+    const {data} = await axiosInstace.post(`/student/mark-lecture-viewed` ,  {courseId , userId , lectureId});
+    return data;
+}   
+
+export async function resetCourseProgressService(courseId , userId){
+    const {data} = await axiosInstace.post(`/student/reset-progress` ,  {courseId , userId});
+    return data;
+}   
+
