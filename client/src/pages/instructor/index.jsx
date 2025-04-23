@@ -16,6 +16,8 @@ function InstructorDashboardPage() {
         sessionStorage.clear();
     }
     
+    
+    
     const [activeTab, setActiveTab] = useState("dashboard");
     const {instructorCourseList , setInstructorCourseList} = useContext(InstructorContext)
     
@@ -33,7 +35,7 @@ function InstructorDashboardPage() {
             icon: BarChart,
             label: "Dashboard",
             value: "dashboard",
-            component: <InstructorDashboard />
+            component: <InstructorDashboard listOfCourses={instructorCourseList}/>
         },
         {
             icon: Book,
@@ -48,7 +50,8 @@ function InstructorDashboardPage() {
             component: null
         }
     ];
-
+    
+    console.log(instructorCourseList);
     return (
         <div className="flex h-full min-h-screen bg-gray-100">
             {/* Sidebar */}

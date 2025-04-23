@@ -13,8 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VideoPlayer from "@/components/video-player";
 import { AuthContex } from "@/contex/auth-contex";
 import { StudentContext } from "@/contex/student-context";
-import { getCurrentCourseProgressservice } from "@/services";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { getCurrentCourseProgressservice, markLectureAsViewedService, resetCourseProgressService } from "@/services";
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, CircleCheck, Play } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import ReactConfetti from "react-confetti";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,12 +31,12 @@ function StudentViewCourseProgressPage() {
   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
     useState(false);
   const [showConfitti, setShowConfitti] = useState(false);
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
   const { id } = params;
 
   async function fetchCurrentCourseProgress() {
     const response = await getCurrentCourseProgressservice(id, auth?.user?._id);
-    console.log(response);
+    console.log("ftechid" , response)
     if (response.success) {
       if (!response?.data?.isPurchased) {
         setLockCourse(true);
@@ -50,11 +50,40 @@ function StudentViewCourseProgressPage() {
           setShowCourseCompleteDialog(true);
           setShowConfitti(true);
         }
-        if (response?.data?.progress.length === 0) {
+        if (response?.data?.progress.length === 0) {+
+
           setCurrentLecture(response?.data?.courseDetails?.curriculum[0]);
         } else {
+            const indexOfLastViewedLecture = response?.data?.progress.reduceRight(
+                (acc , obj , index)=>{
+                    return acc === -1 && obj.viewed ?  index : acc 
+                } , -1
+            )
+
+            
+
+            setCurrentLecture(response.data.courseDetails.curriculum[indexOfLastViewedLecture+1])
+            
         }
-      }
+    }
+}
+}
+
+async function handleRewatchCourse(){
+    const response = await resetCourseProgressService(studentCourseProgress?.courseDetails?._id , auth?.user?._id )
+    if(response?.success){
+        setCurrentLecture(null);
+        setShowConfitti(null);
+        setShowCourseCompleteDialog(false);
+        fetchCurrentCourseProgress(); 
+    }
+}
+
+async function updateCourseProgress(){
+    const response = await markLectureAsViewedService(studentCourseProgress?.courseDetails?._id , auth?.user?._id , currentLecture._id)
+    console.log("mark" , response);
+    if(response?.success){
+        fetchCurrentCourseProgress();
     }
   }
 
@@ -62,13 +91,17 @@ function StudentViewCourseProgressPage() {
     fetchCurrentCourseProgress();
   }, [id]);
 
-console.log(currentLecture);
-
+  useEffect(()=>{
+    if(currentLecture?.progressValue  === 1){
+        updateCourseProgress(); 
+    }
+} ,  [currentLecture])
   return (
     <>
       <StudentViewCommonLayout />
       <div className="flex flex-col h-screen bg-[#1c1d1f] text-white ">
-        {showConfitti && <ReactConfetti />}
+        {showConfitti && <ReactConfetti  width={window.innerWidth}
+    height={window.innerHeight}     />}
 
         <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-[#1c1d1f]">
           <div className="flex items-center space-x-4">
@@ -125,6 +158,11 @@ console.log(currentLecture);
                         {
                             studentCourseProgress?.courseDetails?.curriculum.map(item=>(
                                 <div className="flex items-center space-x-2 text-sm text-white font-bold cursor-pointer" key={item._id}>
+                                    {
+                                        studentCourseProgress?.progress?.find(progressItem=> progressItem.lectureId === item._id)?.viewed 
+                                        ? <CircleCheck className= "font-extrabold text-green-500 h-6 w-6 "/> :
+                                        <Play className="h-6 w-6"/>
+                                    }                                    
                                     <span>
                                         {item?.title}
                                     </span>
@@ -160,14 +198,14 @@ console.log(currentLecture);
           </DialogContent>
         </Dialog>
         <Dialog open={showCourseCompleteDialog}>
-          <DialogContent className="sm w-[425px]">
+          <DialogContent showOverlay={false} className="sm w-[425px]">
             <DialogHeader>
               <DialogTitle>Congratulations</DialogTitle>
               <DialogDescription className="flex flex-col gap-3">
                 <Label>You have completed the course!!!</Label>
                 <div className="flex flex-row gap-3">
-                  <Button>My courses Page</Button>
-                  <Button>Rewatch Course</Button>
+                  <Button onClick={()=>navigate('/student-courses')} >My courses Page</Button>
+                  <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
                 </div>
               </DialogDescription>
             </DialogHeader>

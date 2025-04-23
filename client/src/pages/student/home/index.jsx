@@ -5,11 +5,14 @@ import { courseCategories } from "@/config";
 import { Button } from "@/components/ui/button";
 import { useContext, useEffect } from "react";
 import { StudentContext } from "@/contex/student-context";
-import { fetchStudentViewCourseListService } from "@/services";
+import { checkCoursePurchaseInfoService, fetchStudentViewCourseListService } from "@/services";
+import { AuthContex } from "@/contex/auth-contex";
+import { useNavigate } from "react-router-dom";
 
 
 function StudentHomePage(){
-
+    const {auth} = useContext(AuthContex);
+    const navigate = useNavigate()
     const {studentViewCoursesList , setStudentViewCoursesList} = useContext(StudentContext);
 
     async function fetchAllStudentViewCourses(){
@@ -18,6 +21,29 @@ function StudentHomePage(){
             setStudentViewCoursesList(response?.data)
 
         }
+    }
+
+        async function handleNavigate(getCurrentCourseId){
+        const response = await checkCoursePurchaseInfoService(getCurrentCourseId , auth?.user._id);
+        
+        if(response.success){
+            if(response.data){
+                navigate(`/courses-progress/${getCurrentCourseId}`);
+            }else{
+                navigate(`/course/details/${getCurrentCourseId}`);  
+            }
+        }
+
+    }
+
+    function handleNavigateToCoursesPage(getCurrentId){
+        sessionStorage.removeItem('filters');
+        const currentFilters = {
+            category : [getCurrentId]
+        }
+        sessionStorage.setItem('filters' , JSON.stringify(currentFilters));
+        navigate('/courses  ')
+        
     }
 
     useEffect(()=>{
@@ -52,7 +78,7 @@ function StudentHomePage(){
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         {
                             courseCategories.map(categoryItem =>(
-                                    <Button className="items-center" variant="outline" key={categoryItem.id}>
+                                    <Button onClick={()=>{handleNavigateToCoursesPage(categoryItem.id)}} className="items-center" variant="outline" key={categoryItem.id}>
                                         {categoryItem.label}
                                     </Button>
                             ))
@@ -65,7 +91,7 @@ function StudentHomePage(){
                         {
                             studentViewCoursesList && studentViewCoursesList.length >0?
                             studentViewCoursesList.map(courseItem=>
-                            <div className="border-2 border-black rounded-lg overflow-hidden cursor-pointer shadow m-2 ">
+                            <div onClick={()=>{handleNavigate(courseItem?._id)}} className="border-2 border-black rounded-lg overflow-hidden cursor-pointer shadow m-2 ">
                                 <img src={courseItem.image} alt=""
                                     width={500}
                                     height={150}

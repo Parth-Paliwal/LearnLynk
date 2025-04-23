@@ -99,12 +99,12 @@ export async function getCurrentCourseProgressservice(courseId , userId){
 }   
 
 export async function markLectureAsViewedService(courseId , userId , lectureId ){
-    const {data} = await axiosInstace.post(`/student/mark-lecture-viewed` ,  {courseId , userId , lectureId});
+    const {data} = await axiosInstace.post(`/student/course-progress/mark-lecture-viewed` ,  {courseId , userId , lectureId});
     return data;
 }   
 
 export async function resetCourseProgressService(courseId , userId){
-    const {data} = await axiosInstace.post(`/student/reset-progress` ,  {courseId , userId});
-    return data;
+    const {data} = await axiosInstace.post(`/student/course-progress/reset-progress` ,  {courseId , userId});
+    return data; 
 }   
 
